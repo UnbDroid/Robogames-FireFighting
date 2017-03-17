@@ -24,7 +24,6 @@ int ledl=8, ledf=9, ledr=10;                    //ISSO NAO ENTRA NO CODIGO PRINC
 
 
 
-
 //variaveis                                                     //ENTRA NO CODIGO
 float usfDist, uslDist, usrDist;
 
