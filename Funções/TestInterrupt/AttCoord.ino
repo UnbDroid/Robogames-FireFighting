@@ -23,7 +23,7 @@ int cont0=0;
 #define COORD_X 1
 #define COORD_Y 2
 
-#define WEEL_DIAM 1                  //Diâmetro da roda    ATUALIZAR PARA O VALOR CERTO
+#define WEEL_DIAM 11.5                  //Diâmetro da roda    ATUALIZAR PARA O VALOR CERTO
 
 
 volatile long int encCount[2], coord[2];                      // Vetores que armazenam quantas vezes o encoder foi ativado (nos eixos X e Y), e a posição do robô (também nos eixos X e Y)
