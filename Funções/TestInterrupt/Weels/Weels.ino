@@ -13,18 +13,35 @@ int dir;
 
 void setup() {
   SetupWeels();
-
+  Serial.begin(9600);
 }
 
 void loop() {
-  OnFwd(MOTOR_LEFT, 50);
-  delay(1500);
-  OnFwd(MOTOR_LEFT, 100);
-  delay(1500);
+  OnFwd(MOTOR_RIGHT, 0);
+  /**/OnFwd(MOTOR_LEFT, 50);
+  delay(750);
   OnFwd(MOTOR_LEFT, 0);
-  delay(1500);
-  OnFwd(MOTOR_LEFT, -100);
-  delay(1500);
+  OnFwd(MOTOR_RIGHT, 50);
+  delay(750);
+  OnFwd(MOTOR_RIGHT, 0);
+  OnFwd(MOTOR_LEFT, 130);
+  delay(750);
+  OnFwd(MOTOR_LEFT, 0);
+  OnFwd(MOTOR_RIGHT, 130);
+  delay(750);
+  OnFwd(MOTOR_RIGHT, 0);
+  OnFwd(MOTOR_LEFT, -130);
+  delay(750);
+  OnFwd(MOTOR_LEFT, 0);
+  OnFwd(MOTOR_RIGHT, -130);
+  delay(750);
+  OnFwd(MOTOR_RIGHT, 0);
   OnFwd(MOTOR_LEFT, -50);
+  delay(750);
+  OnFwd(MOTOR_LEFT, 0);
+  OnFwd(MOTOR_RIGHT, -50);
+  delay(750);
+  OnFwd(MOTOR_LEFT, 130);
+  OnFwd(MOTOR_RIGHT, 130);
   delay(1500);
 }
