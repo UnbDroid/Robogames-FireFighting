@@ -6,9 +6,9 @@
 /*______________________________________________FUNCOES DE ALTO NIVEL !!_________________________________________________*/
 /*
  funcao que recebe duas coordenadas (X,Y) atuais e retorna o local do robo numa matriz de 9 (qual casa)
- |30|31|32|
  |20|21|22|
- |00|01|12|
+ |10|11|12|
+ |00|01|02|
  ///////////////////// NOTE QUE AS AREAS NAO VAO SER QUADRADAS !! VOA DEPENDER DO TAMANHO DA ARENA E DOS QUARTOS
 */
 /*_______________________________________________________________________________________________________________________*/  
