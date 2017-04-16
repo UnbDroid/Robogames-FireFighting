@@ -1,6 +1,53 @@
-
-
 /*esqueleto de codigo para implementar*/
+
+/*---------------------------------------------------------------------------*/
+/* Defines dos valores do busy*/
+
+#define WALK_STAIRS 1                // macro que manda robo andar a distancia da escada bem no começo ou bem no final do codigo
+
+#define FORWARD 2                    // macro que manda o robo seguir adiante na casa
+
+#define TURN_LEFT 3                  // macro que manda o robo girar 90 graus para a esquerda
+#define TURN_RIGHT 4                 // macro que manda o robo girar 90 graus para a direita
+#define TURN_AROUND 5                // macro que manda o robo girar 180 graus
+
+#define CHECK_ROOM 6                 // macro que manda o robo checar o quarto em que ele está
+#define CANDLE 7                     // macro que manda o robo apagar a vela
+
+#define BACK_HOME 8                  // macro que manda o robo voltar pro inicio, de acordo com a posicao dele no mapa
+
+#define WALK_DISTANCE 9              // macro que manda o robo andar a distancia especifica (somente sera chamada em um momento do codigo, antes de entrar no ultimo quarto, portanto se refere a apenas uma distancia especifica)
+
+#define WALK_TO_WALL 10              // macro que manda o robo andar ate chegar perto da parede (necessário após checar a sala, para ficar relativamente no centro do corredor)
+
+int busy = WALK_STAIRS;
+/*---------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------------*/
+/* Includes, defines e variáveis do giroscópio*/
+
+#include <Wire.h>
+
+#define CTRL_REG1 0x20
+#define CTRL_REG2 0x21
+#define CTRL_REG3 0x22
+#define CTRL_REG4 0x23
+#define CTRL_REG5 0x24
+#define REFERENCE 0X25
+
+int AngSpeedZ, gyroTime, gyroAddress = 105;
+unsigned long tGyroNow=0, tGyroAnt;
+long int yaw=0;
+float gyroFilterB=0, gyroFilterA = 0;
+/*-----------------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------------------*/
+/* Variáveis de localização*/
+
+int vaosCount=0;                           // número de vãos que o robô encontrou enquanto percorre a arena (depois alguem traduz a variável pro inglês, pq n me lembro agora a tradução kkk)
+
+/*----------------------------------------------------------------------------------------------------*/
+
 /*
   --------------------------------------inicizalizacao---------------------------
   funcao de inicializar os sensores/ponte H/ motores/ encoders
@@ -44,6 +91,53 @@
  ----DIRECIONARIA O ANDAMENTO DO CODIGO PARA AS OUTRAS FUNCOES USANDO VARIAVEL GLOBAR DO ESTADO ATUAL DO ROBO (o nome dessa variavel provavelmente sera busy)! 
  --------------- RECOMENDO DEIXAR A IMPLEMENTACAO DESSA FUNCAO PARA O ABDU/MINIBAU
 */
+
+void Heart(){
+  switch(busy){
+      case WALK_STAIRS:
+        //chama função para atravessar a escada
+        //se a função de voltar pra casa ainda não tiver sido chamada
+        break;
+        
+      case FORWARD:
+        //OnFwd(MOTOR_RIGHT, 90);
+        //OnFwd(MOTOR_LEFT, 90);
+        break;
+
+      case TURN_LEFT:
+        //Turn(-90);            //função Turn(int degree) já existe, só falta passar para cá
+        break;
+
+      case TURN_RIGHT:
+        //Turn(90);
+        break;
+
+      case TURN_AROUND:
+        //Turn(180);
+        break;
+
+      case CHECK_ROOM:
+        //Função para checar a sala
+        break;
+
+      case CANDLE:
+        //Função para ir para perto da vela e apagá-la
+        break;
+
+      case BACK_HOME:
+        //Função que calcula a rota para voltar para o inicio, e manda o robô pra lá
+        break;
+
+      case WALK_DISTANCE:
+        //Função para o robô percorrer uma distância específica
+        break;
+
+      case WALK_TO_WALL:
+        //Função para o robô chegar a uma distância específica da parede na frente
+        break;
+  }
+}
+
 /*______________________________________-----------------------------------______________________________________________*/
 /*--------------------------------------___________________________________----------------------------------------------*/
 
@@ -73,7 +167,7 @@ void setup()
   -----------------------------------------------------------
     chamar a funcao de inicializar os bagul
     ;
-    e anda certa distancia ate o vao atravessando a escada
+    e anda certa distancia ate o vao atravessando a escada     --> Minibau: fiz de um jeito que essa parte fica inclusa no coração do codigo, não precisa ser chamada aqui
     depois de andar, somar o valor da distancia entre o ponto de inicio ate o final da escada (projetado no x ja)
   */
 }

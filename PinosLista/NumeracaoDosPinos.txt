@@ -1,0 +1,23 @@
+Motor esquerda:
+		MAL == 8	(Entrada A da ponte H)
+		MBL == 9	(Entrada B da ponte H)
+		MOTORL_VEL 10	(Potência da roda esquerda)
+
+Motor direita:
+		MAR == 11	(Entrada A da ponte H)
+		MBR == 12	(Entrada B da ponte H)
+		MOTORR_VEL 13	(Potência da roda direita)
+
+Ultrassons:
+	Frente:
+		USF_TRIG == 	(Trigger do ultrassom frontal)
+		USF_ECHO == 	(Pino echo do ultrassom frontal)
+	Esquerda:
+		USL_TRIG == 	(Trigger do ultrassom da esquerda)
+		USL_ECHO == 	(Pino echo do ultrassom da esquerda)
+	Direita:
+		USR_TRIG == 	(Trigger do ultrassom da direita)
+		USR_ECHO == 	(Pino echo do ultrassom da direita)
+
+Microfone:
+		MIC_IN == 	(Input do sensor de som)
