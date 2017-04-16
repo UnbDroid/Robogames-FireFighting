@@ -71,5 +71,62 @@ int ReadRegister(int deviceAddress, byte address)
 /*----------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*Filtro do giroscópio*/
+
+void AttGyroFilter(int imax){
+  //O erro é dado por uma função linear (y=ax+b, com x sendo o tempo decorrido), o filtro abaixo encontra essa função, para então aplicá-la
+  int i, count1=0, count2=0;
+  for(i=0;i<imax;i++){
+    GetGyroValue();
+    count1 += AngSpeedZ;
+  }
+  gyroFilterB = count1/imax;
+
+  count1 = 0;
+  GetGyroValue();
+  count1 += AngSpeedZ;
+  GetGyroValue();
+  count1 += AngSpeedZ;
+  GetGyroValue();
+  count1 += AngSpeedZ;
+  count1 = count1/3;
+  delay(489);
+  GetGyroValue();
+  count2 += AngSpeedZ;
+  GetGyroValue();
+  count2 += AngSpeedZ;
+  GetGyroValue();
+  count2 += AngSpeedZ;
+  count2 = count2/3;
+  gyroFilterA = (count2 - count1)/500;    //a princípio dividiria por 489, mas as funções chamadas gastam também certo tempo (não sei quanto especificamente), então esse tempo é levado a mais em consideração. Não foi feito nenhum cálculo, o valor 489 -> 500 foi apenas o que deu melhor resultado
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*Pegando e transformando os valores do giroscópio*/
+
+int GetGyro(){
+  return yaw/14640;
+}
+
+void UpdateGyro(){
+  //função que pega os valores de velocidade angular e integra no tempo (pra pegar a posição angular)
+  tGyroAnt = tGyroNow;
+  tGyroNow = millis();
+  GetGyroValue();  
+  AngSpeedZ -= (gyroFilterA*tGyroNow + gyroFilterB);
+  gyroTime = tGyroNow - tGyroAnt;
+  yaw += gyroTime*AngSpeedZ;
+}
+
+void GetGyroValue()
+{
+  //Rotina para leitura dos valores de velocidade angular em torno de z
+  //a leitura do giroscópio é dada em dois bits, nos endereços apresentados abaixo
+  byte zMSB = ReadRegister(105, 0x2D);  //zMSB == z Most Significant Byte
+  byte zLSB = ReadRegister(105, 0x2C);  //zLSB == z Least Significant Byte
+  AngSpeedZ = ((zMSB << 8) | zLSB);     //junção do bit menos significativo com o mais significativo, para dar o valor inteiro referente à velocidade angular em z
+}
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------*/
