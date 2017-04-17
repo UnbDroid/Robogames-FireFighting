@@ -20,8 +20,24 @@
 
 #define WALK_TO_WALL 10              // macro que manda o robo andar ate chegar perto da parede (necessário após checar a sala, para ficar relativamente no centro do corredor)
 
+#define STATE_ANALISER 11
+
 int busy = WALK_STAIRS;
 /*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*/
+/*Defines para os motores*/
+#define MAL 8   // entrada A da ponte H da roda esquerda
+#define MBL 9   // entrada B da ponte H da roda esquerda
+#define MOTORL_VEL  10   // entrada de potência do motor esquerdo
+#define MAR 11   // entrada A da ponte H da roda direito
+#define MBR 12   // entrada B da ponte H da roda direito
+#define MOTORR_VEL  13   // entrada de potência do motor direito
+
+#define MOTOR_LEFT 1
+#define MOTOR_RIGHT 2
+
+/*-----------------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------------*/
 /* Includes, defines e variáveis do giroscópio*/
@@ -44,14 +60,58 @@ float gyroFilterB=0, gyroFilterA = 0;
 /*----------------------------------------------------------------------------------------------------*/
 /* Variáveis de localização*/
 
-int vaosCount=0;                           // número de vãos que o robô encontrou enquanto percorre a arena (depois alguem traduz a variável pro inglês, pq n me lembro agora a tradução kkk)
+#define COORD_X 1
+#define COORD_Y 2
+
+int gapCountRight=0, gapCountLeft=0;                           // número de vãos que o robô encontrou enquanto percorre a arena (depois alguem traduz a variável pro inglês, pq n me lembro agora a tradução kkk)
+int x=0, y=0;
+int dir=-COORD_Y , flameDetect=0, inRoom=0;
 
 /*----------------------------------------------------------------------------------------------------*/
+
+
+/*-----------------------------------------------------------------------------------*/
+/* Variaveis para controle das funções*/
+int turnStart=1;                        //turnStart serve para a função identificar se é a primeira vez que chama a função Turn
+
+/*----------------------------------------------------------------------------------------------------*/
+
 
 /*
   --------------------------------------inicizalizacao---------------------------
   funcao de inicializar os sensores/ponte H/ motores/ encoders
 */
+void SetupWheels(){
+  pinMode(MAL, OUTPUT);
+  pinMode(MBL, OUTPUT);
+  pinMode(MOTORL_VEL, OUTPUT);
+  pinMode(MAR, OUTPUT);
+  pinMode(MBR, OUTPUT);
+  pinMode(MOTORR_VEL, OUTPUT);
+}
+/*--------------------------------------------------------------------------------*/
+
+void OnFwd(int motor, int power){
+  if(motor==MOTOR_LEFT){
+    int vel;
+    digitalWrite(MAL, (1+(power/abs(power)))/2);
+    digitalWrite(MBL, (1-(power/abs(power)))/2);
+    vel=abs(power);
+    analogWrite(MOTORL_VEL, vel);
+  }
+  else{
+    if(motor==MOTOR_RIGHT){
+      digitalWrite(MAR, (1+(power/abs(power)))/2);
+      digitalWrite(MBR, (1-(power/abs(power)))/2);
+      analogWrite(MOTORR_VEL, abs(power));
+    }
+    else{
+      //manda mensagem de erro
+    }
+  }
+}
+
+
 /*______________________________________________FUNCOES DE ALTO NIVEL !!_________________________________________________*/
 /*
  funcao que recebe duas coordenadas (X,Y) atuais e retorna o local do robo numa matriz de 9 (qual casa)
@@ -92,28 +152,35 @@ int vaosCount=0;                           // número de vãos que o robô encon
  --------------- RECOMENDO DEIXAR A IMPLEMENTACAO DESSA FUNCAO PARA O ABDU/MINIBAU
 */
 
+void AnaliseState(){
+  if(
+}
+
 void Heart(){
   switch(busy){
-      case WALK_STAIRS:
+      /*case WALK_STAIRS:
         //chama função para atravessar a escada
         //se a função de voltar pra casa ainda não tiver sido chamada
+        break;*/
+      case STATE_ANALISER:
+        AnaliseState();
         break;
         
       case FORWARD:
-        //OnFwd(MOTOR_RIGHT, 90);
-        //OnFwd(MOTOR_LEFT, 90);
+        OnFwd(MOTOR_RIGHT, 90);
+        OnFwd(MOTOR_LEFT, 90);
         break;
 
       case TURN_LEFT:
-        //Turn(-90);            //função Turn(int degree) já existe, só falta passar para cá
+        Turn(-90);            //função Turn(int degree) já existe, só falta passar para cá
         break;
 
       case TURN_RIGHT:
-        //Turn(90);
+        Turn(90);
         break;
 
       case TURN_AROUND:
-        //Turn(180);
+        Turn(180);
         break;
 
       case CHECK_ROOM:
@@ -149,13 +216,39 @@ void Heart(){
 /*
   funcao que recebe a distancia como parametro e anda essa distancia pedida. (poderia ser arrompida pela leitura do vao no US)
 */
+
 /*_______________________________________________________________________________________________________________________*/
 /*
   funcoes de girar (podem ser varias para cada um angulo e direcao, ou uma que recebe angulo e direcao como parametro e faz para qualquer angulo "funcao inteligente")
   ---para escolher qual o tipo dessa funcao, recomendo o segundo pq poderia ser reutilizado e seria bem mais inteligente 
   MAS*** as vezes esse tipo de funcao eh mais arriscado do que implementar funcao para cada caso! entao se n der muito certo o segundo tipo, pode ser o primeiro
 */
+void Turn(int degree){
+  if(turnStart){
+    OnFwd(MOTOR_RIGHT, 0);
+    OnFwd(MOTOR_LEFT, 0);
+    yaw=0;
+    AttGyroFilter(1000);
+    turnStart=0;
+  }
+  UpdateGyro();
+  UpdateGyro();
+  UpdateGyro();
+  if(abs(GetGyro())<abs(degree)){
+    OnFwd(MOTOR_RIGHT, (degree/abs(degree))*100);
+    OnFwd(MOTOR_LEFT, -(degree/abs(degree))*100);
+  }
+  else{
+    OnFwd(MOTOR_RIGHT, 0);
+    OnFwd(MOTOR_LEFT, 0);
+    
+    busy = STATE_ANALISER;
+    
+    turnStart=1;
+  }
+}
 /*_______________________________________________________________________________________________________________________*/
+
 /*
  filtros para os sensores que necessitam
 */
@@ -174,4 +267,5 @@ void setup()
 
 void loop()
 {
+  Heart();
 }
