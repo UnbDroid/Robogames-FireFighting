@@ -119,6 +119,7 @@ void OnFwd(int motor, int power){
  |10|11|12|
  |00|01|02|
  ///////////////////// NOTE QUE AS AREAS NAO VAO SER QUADRADAS !! VOA DEPENDER DO TAMANHO DA ARENA E DOS QUARTOS
+ ///////////o schaivini ficou com essa funcao !
 */
 /*_______________________________________________________________________________________________________________________*/  
 /*
