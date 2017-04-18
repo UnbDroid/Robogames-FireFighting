@@ -1,12 +1,12 @@
 
-#define FLAME_PIN_AN  
-#define FLAME_PEAK 
+#define FLAME_PIN_AN  A0
+#define FLAME_PEAK 100
 
 int sFlameLast=0, sFlameNow, flamePresence=0;
 
 void ISeeFire(){
   /*flameLast=flameNow;*/
-  flameNow=analogRead(FLAME_PIN_AN);
+  sFlameNow=analogRead(FLAME_PIN_AN);
   /*if((sFlameNow-sFlameLast)>FLAME_PEAK){
     flamePresence=1;
   }*/
