@@ -1,10 +1,4 @@
-#define ENCODER_LEFT 1
-#define ENCODER_RIGHT 2
 
-#define WEEL_DIAM 15
-
-int allowEncoder=1, dir;
-volatile long int encCountLeft[2], encCountRight[2], coord[2];
 
 float DegreeToCm( float dg){                              // Converte o ângulo da roda para centímetros percorridos por ela
   return (((dg * PI)/360) * WEEL_DIAM);
@@ -31,20 +25,3 @@ void AttCoord() {                                        // Atualiza o valor de 
   coord[abs(dir)-1] = (DegreeToCm ( Degree( encCountRight[abs(dir)-1] ) ) + DegreeToCm ( Degree( encCountLeft[abs(dir)-1] ) ) ) / 2;          //transformando a contagem do encoder de uma das direções, na posição (em centímetros) do robô, em relação à posição inicial do mesmo
 }
 
-void setup() {
-  encCountLeft[0]=0;
-  encCountLeft[1]=0;
-  encCountRight[0]=0;
-  encCountRight[1]=0;
-  coord[0]=0;
-  coord[1]=0;
-
-  attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT), AddEncoderLeft, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT), AddEncoderRight, RISING);
-  
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
