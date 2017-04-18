@@ -208,11 +208,10 @@ void Turn(int degree){
   else{
     OnFwd(MOTOR_RIGHT, 0);
     OnFwd(MOTOR_LEFT, 0);
-    //muda o busy
-    cont++;
+    //busy = STATE_ANALISER
     turnStart=1;
   }
-}
+}     //mudar o dir logo depois de chamar essa função
 
 
 
@@ -230,7 +229,7 @@ void loop() {
   else{
     Turn(-90);
   }*/
-  if((cont/1000)%2==0){
+  /*if((cont/1000)%2==0){
     OnFwd(MOTOR_RIGHT, 90);
     OnFwd(MOTOR_LEFT, 90);
   }
@@ -238,5 +237,9 @@ void loop() {
     OnFwd(MOTOR_RIGHT, -90);
     OnFwd(MOTOR_LEFT, -90);
   }
-  cont++;
+  cont++;*/
+  Turn(90);
+  delay(500);
+  Turn(-180);
+  delay(500);
 }
