@@ -17,7 +17,6 @@ void OnFwd(int motor, int power){
       digitalWrite(MAR, (1+(power/abs(power)))/2);
       digitalWrite(MBR, (1-(power/abs(power)))/2);
       analogWrite(MOTORR_VEL, abs(power));
-      dir = dir*(power/abs(power));
     }
     else{
       //manda mensagem de erro

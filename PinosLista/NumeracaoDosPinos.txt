@@ -10,14 +10,14 @@ Motor direita:
 
 Ultrassons:
 	Frente:
-		USF_TRIG == 	(Trigger do ultrassom frontal)
-		USF_ECHO == 	(Pino echo do ultrassom frontal)
+		USF_TRIG == 23	(Trigger do ultrassom frontal)
+		USF_ECHO == 25	(Pino echo do ultrassom frontal)
 	Esquerda:
-		USL_TRIG == 	(Trigger do ultrassom da esquerda)
-		USL_ECHO == 	(Pino echo do ultrassom da esquerda)
+		USL_TRIG == 27	(Trigger do ultrassom da esquerda)
+		USL_ECHO == 29	(Pino echo do ultrassom da esquerda)
 	Direita:
-		USR_TRIG == 	(Trigger do ultrassom da direita)
-		USR_ECHO == 	(Pino echo do ultrassom da direita)
+		USR_TRIG == 31	(Trigger do ultrassom da direita)
+		USR_ECHO == 33	(Pino echo do ultrassom da direita)
 
 Microfone:
 		MIC_IN == 	(Input do sensor de som)
