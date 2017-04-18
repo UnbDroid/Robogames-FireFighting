@@ -10,7 +10,7 @@
 #define MOTOR_RIGHT 2
 
 
-int dir;
+int dir=1;
 //-----------------------------------------------------------------------------------------
 //Do Interrupt:
 #define ENCODER_LEFT 1
@@ -69,20 +69,28 @@ void setup() {
   
   SetupWeels();
   
-  encCountLeft[0]=0;
-  encCountLeft[1]=0;
-  encCountRight[0]=0;
-  encCountRight[1]=0;
-  coord[0]=0;
-  coord[1]=0;
-
-  attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT), AddEncoderLeft, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT), AddEncoderRight, RISING);
+  SetupInterrupt();
 
   SetupPID();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  /**/OnFwd(MOTOR_RIGHT, 100);
+  OnFwd(MOTOR_LEFT, 100);
+  delay(1000);
+  OnFwd(MOTOR_RIGHT, 0);
+  OnFwd(MOTOR_LEFT, 0);
+  delay(1000);
+  OnFwd(MOTOR_RIGHT, -100);
+  OnFwd(MOTOR_LEFT, -100);
+  delay(1000);
+  AttCoord();
+  while(coord[0]<100){
+    OnFwd(MOTOR_RIGHT, 100);
+    OnFwd(MOTOR_LEFT, 100);
+  }
+  while(coord[0]>0){
+    OnFwd(MOTOR_RIGHT, -100);
+    OnFwd(MOTOR_LEFT, -100);
+  }
 }

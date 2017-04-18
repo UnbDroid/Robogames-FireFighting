@@ -25,3 +25,15 @@ void AttCoord() {                                        // Atualiza o valor de 
   coord[abs(dir)-1] = (DegreeToCm ( Degree( encCountRight[abs(dir)-1] ) ) + DegreeToCm ( Degree( encCountLeft[abs(dir)-1] ) ) ) / 2;          //transformando a contagem do encoder de uma das direções, na posição (em centímetros) do robô, em relação à posição inicial do mesmo
 }
 
+void SetupInterrupt(){
+  encCountLeft[0]=0;
+  encCountLeft[1]=0;
+  encCountRight[0]=0;
+  encCountRight[1]=0;
+  coord[0]=0;
+  coord[1]=0;
+
+  attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT), AddEncoderLeft, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT), AddEncoderRight, RISING);
+}
+
