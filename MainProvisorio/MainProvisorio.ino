@@ -33,19 +33,29 @@ int busy = STATE_ANALISER;
 
 #define MAX_DIST 200   //distancia maxima que o ultrassom "ve"
 
-#define USF_TRIG    //Ultrassom frontal
-#define USF_ECHO  
-#define USL_TRIG    //Ultrassom da esquerda (left)
-#define USL_ECHO  
-#define USR_TRIG    //Ultrassom da direita (right)
-#define USR_ECHO  
+#define USF_TRIG 23   //Ultrassom frontal
+#define USF_ECHO 25 
+#define USL_TRIG 27   //Ultrassom da esquerda (left)
+#define USL_ECHO 29 
+#define USR_TRIG 31   //Ultrassom da direita (right)
+#define USR_ECHO 33 
 
 NewPing usf(USF_TRIG, USF_ECHO, MAX_DIST);
 NewPing usl(USL_TRIG, USL_ECHO, MAX_DIST);
 NewPing usr(USR_TRIG, USR_ECHO, MAX_DIST);
 
-float usfDistNow, uslDistNow, usrDistNow, usfDistLast, uslDistLast, usrDistLast;
-//-----------------------------------------------------------
+#define MIN_DIST_GAP 15
+
+float usfDist, uslDistLast, uslDistNow, usrDistLast, usrDistNow;
+int lookGapLeft=0, lookGapRight=0, gapFound=0;
+
+//------------------------------------------------------------------------------------------------------
+
+// Inicialização e variáveis do sensor de chama
+#define FLAME_PIN_AN  A0
+#define FLAME_PEAK 60
+
+int sFlameLast=0, sFlameNow, flamePresence=0;
 
 /*---------------------------------------------------------------------------*/
 /*Defines para os motores*/
@@ -60,8 +70,29 @@ float usfDistNow, uslDistNow, usrDistNow, usfDistLast, uslDistLast, usrDistLast;
 #define MOTOR_RIGHT 2
 
 /*-----------------------------------------------------------------------------------*/
+//Do Interrupt:
+#define ENCODER_LEFT 1
+#define ENCODER_RIGHT 2
+
+#define WEEL_DIAM 15
+
+int allowEncoder=1;
+volatile long int encCountLeft[2], encCountRight[2], coord[2];
 
 /*-----------------------------------------------------------------------------------*/
+// Variaveis do PID
+#include <PID_v1.h>
+
+double powerLeft=100, powerRight=100;
+double ctrlPID;
+double Klp = 1, Kli = 1, Kld = 1;
+double Krp = 1, Kri = 1, Krd = 1;
+
+
+PID PID_ESQ(&ctrlPID, &powerLeft, 0, Klp, Kli, Kld, REVERSE);
+PID PID_DIR(&ctrlPID, &powerRight, 0, Krp, Kri, Krd, DIRECT);
+
+//-------------------------------------------------------------------------------------------------------------
 /* Includes, defines e variáveis do giroscópio*/
 
 #include <Wire.h>
@@ -90,7 +121,7 @@ int x=0, y=0;
 int dir=-COORD_Y , flameDetect=0, inRoom=0;
 
 
-int countSteps=0, backHomeSteps=0, flameDown=0, lookGapRight=0, lookGapLeft=0, lookGapFront=0;     //Variaveis para main provisório, contando cada passo
+int countSteps=0, backHomeSteps=0, flameDown=0;     //Variaveis para main provisório, contando cada passo
 
 /*----------------------------------------------------------------------------------------------------*/
 
@@ -106,35 +137,10 @@ int turnStart=1;                        //turnStart serve para a função identi
   --------------------------------------inicizalizacao---------------------------
   funcao de inicializar os sensores/ponte H/ motores/ encoders
 */
-void SetupWheels(){
-  pinMode(MAL, OUTPUT);
-  pinMode(MBL, OUTPUT);
-  pinMode(MOTORL_VEL, OUTPUT);
-  pinMode(MAR, OUTPUT);
-  pinMode(MBR, OUTPUT);
-  pinMode(MOTORR_VEL, OUTPUT);
-}
+
 /*--------------------------------------------------------------------------------*/
 
-void OnFwd(int motor, int power){
-  if(motor==MOTOR_LEFT){
-    int vel;
-    digitalWrite(MAL, (1+(power/abs(power)))/2);
-    digitalWrite(MBL, (1-(power/abs(power)))/2);
-    vel=abs(power);
-    analogWrite(MOTORL_VEL, vel);
-  }
-  else{
-    if(motor==MOTOR_RIGHT){
-      digitalWrite(MAR, (1+(power/abs(power)))/2);
-      digitalWrite(MBR, (1-(power/abs(power)))/2);
-      analogWrite(MOTORR_VEL, abs(power));
-    }
-    else{
-      //manda mensagem de erro
-    }
-  }
-}
+
 
 
 /*______________________________________________FUNCOES DE ALTO NIVEL !!_________________________________________________*/
@@ -178,22 +184,47 @@ void OnFwd(int motor, int power){
 */
 
 int GoHome(){
-  if(countSteps==7){              //quarto cima direita
-    
-  }
-  else{
-    if(countSteps==11){               //quarto cima esquerda
-
+  if((countSteps==7)||(countSteps==11)){              //quartos de cima 
+    if((backHomeSteps==0)||(backHomeSteps==2)||(backHomeSteps==4)){
+      return TURN_LEFT;
     }
     else{
-      if(countSteps==17){             //quarto baixo esquerda
+      return WALK_TO_WALL;
+    }
+  }
 
+  
+  else{                                           //quartos de baixo
+    if(backHomeSteps==0){               
+      if(countSteps==17){
+        return TURN_LEFT;
       }
-      else{                           //quarto baixo direita
+      else{
+        return TURN_RIGHT;
+      }
+    }
+    
+    else{
+      if(backHomeSteps==1){
+        return WALK_LOOK_LEFT;
+      }
+      else{
+        if(backHomeSteps==2){
+          return TURN_RIGHT;
+        }
+        else{
+          if((backHomeSteps==4)||(backHomeSteps==6)){
+            return TURN_LEFT;
+          }
 
+          else{
+            return WALK_TO_WALL;
+          }
+        }
       }
     }
   }
+  backHomeSteps++;
 }
 
 void AnaliseState(){
@@ -201,23 +232,23 @@ void AnaliseState(){
     busy = GoHome();
   }
   else{
-    if((countSteps==0)||(countSteps==12)|(countSteps==18)){
+    if((countSteps==0)||(countSteps==12)||(countSteps==18)){
       busy = TURN_LEFT;
       
     }
     
     else{
-      if((countSteps==2)||(countSteps==4)||(countSteps==6)||(countSteps==8)||(countSteps==10)||(countSteps==14)||(countSteps==16)|(countSteps==20)){
+      if((countSteps==2)||(countSteps==4)||(countSteps==6)||(countSteps==8)||(countSteps==10)||(countSteps==14)||(countSteps==16)||(countSteps==20)){
         busy = TURN_RIGHT;
       }
       
       else {
-        /*if((countSteps==-1)){
+        if((countSteps==-1)){
           busy = TURN_AROUND;
-        }*/
+        }/**/
 
         else{
-          if((countSteps==7)||(countSteps==11)||(countSteps==17)|(countSteps==21)){
+          if((countSteps==7)||(countSteps==11)||(countSteps==17)||(countSteps==21)){
             busy = CHECK_ROOM;
           }
           
@@ -237,7 +268,7 @@ void AnaliseState(){
                 }
 
                 else{
-                  if((countSteps==5)||(countSteps==13)|(countSteps==19)){
+                  if((countSteps==5)||(countSteps==13)||(countSteps==19)){
                     busy = WALK_LOOK_RIGHT;
                   }
                 }
@@ -247,30 +278,8 @@ void AnaliseState(){
         }
       }
     }
+    countSteps++;
   }
-  countSteps++;
-}
-  
-#define STATE_ANALISER 1
-
-#define FORWARD 2                    // macro que manda o robo seguir adiante na casa
-
-#define TURN_LEFT 3                  // macro que manda o robo girar 90 graus para a esquerda
-#define TURN_RIGHT 4                 // macro que manda o robo girar 90 graus para a direita
-#define TURN_AROUND 5                // macro que manda o robo girar 180 graus
-
-#define CHECK_ROOM 6                 // macro que manda o robo checar o quarto em que ele está
-#define CANDLE 7                     // macro que manda o robo apagar a vela
-
-#define BACK_HOME 8                  // macro que manda o robo voltar pro inicio, de acordo com a posicao dele no mapa
-
-#define WALK_DISTANCE 9              // macro que manda o robo andar a distancia especifica (somente sera chamada em um momento do codigo, antes de entrar no ultimo quarto, portanto se refere a apenas uma distancia especifica)
-
-#define WALK_TO_WALL 10              // macro que manda o robo andar ate chegar perto da parede (necessário após checar a sala, para ficar relativamente no centro do corredor)
-#define WALK_LOOK_LEFT 11
-#define WALK_LOOK_RIGHT 12
-
-  
 }
 
 void Heart(){
@@ -289,7 +298,7 @@ void Heart(){
         break;
 
       case TURN_LEFT:
-        Turn(-90);            //função Turn(int degree) já existe, só falta passar para cá
+        Turn(-90);            
         break;
 
       case TURN_RIGHT:
@@ -308,10 +317,6 @@ void Heart(){
         //Função para ir para perto da vela e apagá-la
         break;
 
-      case BACK _HOME:
-        //Função que calcula a rota para voltar para o inicio, e manda o robô pra lá
-        break;
-
       case WALK_DISTANCE:
         //Função para o robô percorrer uma distância específica
         break;
@@ -327,20 +332,7 @@ void Heart(){
 
 /*______________________________________FUNCOES DE BAIXO NIVEL !!!!!!!!!!!!______________________________________________*/
 
-void ReadUS(){
-  usfDistLast=usfDistNow;
-  usfDistNow=usf.ping_cm();
-  uslDistLast=uslDistNow;
-  uslDistNow=usl.ping_cm();
-  usrDistLast=usrDistNow;
-  usrDistNow=usr.ping_cm();
-  if(uslDistNow>(uslDistLast+20)){
-    gapCountLeft++;
-  }
-  if(usrDistNow>(usrDistLast+20)){
-    gapCountRight++;
-  }
-}
+
 
 /*_______________________________________________________________________________________________________________________*/
 /*
@@ -353,30 +345,7 @@ void ReadUS(){
   ---para escolher qual o tipo dessa funcao, recomendo o segundo pq poderia ser reutilizado e seria bem mais inteligente 
   MAS*** as vezes esse tipo de funcao eh mais arriscado do que implementar funcao para cada caso! entao se n der muito certo o segundo tipo, pode ser o primeiro
 */
-void Turn(int degree){
-  if(turnStart){
-    OnFwd(MOTOR_RIGHT, 0);
-    OnFwd(MOTOR_LEFT, 0);
-    yaw=0;
-    AttGyroFilter(1000);
-    turnStart=0;
-  }
-  UpdateGyro();
-  UpdateGyro();
-  UpdateGyro();
-  if(abs(GetGyro())<abs(degree)){
-    OnFwd(MOTOR_RIGHT, (degree/abs(degree))*100);
-    OnFwd(MOTOR_LEFT, -(degree/abs(degree))*100);
-  }
-  else{
-    OnFwd(MOTOR_RIGHT, 0);
-    OnFwd(MOTOR_LEFT, 0);
-    
-    busy = STATE_ANALISER;
-    
-    turnStart=1;
-  }
-}
+
 /*_______________________________________________________________________________________________________________________*/
 
 /*
