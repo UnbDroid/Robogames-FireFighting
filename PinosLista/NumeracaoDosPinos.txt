@@ -21,3 +21,6 @@ Ultrassons:
 
 Microfone:
 		MIC_IN == 	(Input do sensor de som)
+
+Servo:
+		
