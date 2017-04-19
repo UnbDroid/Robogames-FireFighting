@@ -292,10 +292,10 @@ void Heart(){
         AnaliseState();
         break;
         
-      case FORWARD:
+      /*case FORWARD:
         OnFwd(MOTOR_RIGHT, 90);
         OnFwd(MOTOR_LEFT, 90);
-        break;
+        break;*/
 
       case TURN_LEFT:
         Turn(-90);            
@@ -305,9 +305,9 @@ void Heart(){
         Turn(90);
         break;
 
-      case TURN_AROUND:
+      /*case TURN_AROUND:
         Turn(180);
-        break;
+        break;*/
 
       case CHECK_ROOM:
         //Função para checar a sala
@@ -317,12 +317,26 @@ void Heart(){
         //Função para ir para perto da vela e apagá-la
         break;
 
-      case WALK_DISTANCE:
+      /*case WALK_DISTANCE:
         //Função para o robô percorrer uma distância específica
-        break;
+        break;*/
 
       case WALK_TO_WALL:
-        //Função para o robô chegar a uma distância específica da parede na frente
+        FwdPID();
+        if(usfDist<15){
+          busy = STATE_ANALISER;
+        }
+          
+        break;
+
+      case WALK_LOOK_LEFT:
+          lookGapLeft=1;
+          FwdPID();
+        break;
+
+      case WALK_LOOK_RIGHT:
+          lookGapRight=1;
+          FwdPID();
         break;
   }
 }
@@ -354,6 +368,13 @@ void Heart(){
 
 void setup()
 {
+
+  SetupInterrupt();
+  SetupWheels();
+  SetupPID();
+  SetupGyroscope(2000);
+  pinMode(FLAME_PIN_AN, INPUT);
+  sFlameNow=analogRead(FLAME_PIN_AN);
   /*
       setttar as parada todim
   -----------------------------------------------------------
@@ -366,5 +387,6 @@ void setup()
 
 void loop()
 {
+  ReadUS();
   Heart();
 }

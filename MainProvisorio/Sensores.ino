@@ -14,10 +14,14 @@ void ReadUS(){
     if((lookGapLeft==1)&&(uslDistNow > (uslDistLast + MIN_DIST_GAP))){
       gapCountLeft++;
       gapFound=1;
+      lookGapLeft=0;
+      busy = STATE_ANALISER;
     }
     if((lookGapRight==1)&&(usrDistNow > (usrDistLast + MIN_DIST_GAP))){
       gapCountRight++;
       gapFound=1;
+      lookGapRight=0;
+      busy = STATE_ANALISER;
     }
 }
 //____________________________________________________________________________________________________________________________________________________________________________________

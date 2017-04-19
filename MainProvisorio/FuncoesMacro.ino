@@ -72,6 +72,8 @@ void RevPID(){
 // TURN
 void Turn(int degree){
   if(turnStart){
+    allowEncoder = 0;
+    
     OnFwd(MOTOR_RIGHT, 0);
     OnFwd(MOTOR_LEFT, 0);
     yaw=0;
@@ -88,9 +90,13 @@ void Turn(int degree){
   else{
     OnFwd(MOTOR_RIGHT, 0);
     OnFwd(MOTOR_LEFT, 0);
-    
+
+    allowEncoder = 1;
     busy = STATE_ANALISER;
     
     turnStart=1;
   }
 }
+
+//_______________________________________________________________________________________________________________________________________________________________________________________________________________-
+// CHECA SALA
