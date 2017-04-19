@@ -19,10 +19,11 @@
 #define WALK_DISTANCE 9              // macro que manda o robo andar a distancia especifica (somente sera chamada em um momento do codigo, antes de entrar no ultimo quarto, portanto se refere a apenas uma distancia especifica)
 
 #define WALK_TO_WALL 10              // macro que manda o robo andar ate chegar perto da parede (necessário após checar a sala, para ficar relativamente no centro do corredor)
+#define WALK_LOOK_LEFT 11
+#define WALK_LOOK_RIGHT 12
 
 
-
-int busy = WALK_STAIRS;
+int busy = STATE_ANALISER;
 /*---------------------------------------------------------------------------*/
 
 //---------------------------------------------------------
@@ -88,7 +89,8 @@ int gapCountRight=0, gapCountLeft=0;                           // número de vã
 int x=0, y=0;
 int dir=-COORD_Y , flameDetect=0, inRoom=0;
 
-int countSteps=0, flameDown=0;     //Variavel para main provisório, contando cada passo
+
+int countSteps=0, backHomeSteps=0, flameDown=0, lookGapRight=0, lookGapLeft=0, lookGapFront=0;     //Variaveis para main provisório, contando cada passo
 
 /*----------------------------------------------------------------------------------------------------*/
 
@@ -175,44 +177,69 @@ void OnFwd(int motor, int power){
  --------------- RECOMENDO DEIXAR A IMPLEMENTACAO DESSA FUNCAO PARA O ABDU/MINIBAU
 */
 
-void AnaliseState(){
-  if(flameDown){
-    busy = BACK_HOME
+int GoHome(){
+  if(countSteps==7){              //quarto cima direita
+    
   }
   else{
-    if((countSteps==0)||(countSteps==0)){
+    if(countSteps==11){               //quarto cima esquerda
+
+    }
+    else{
+      if(countSteps==17){             //quarto baixo esquerda
+
+      }
+      else{                           //quarto baixo direita
+
+      }
+    }
+  }
+}
+
+void AnaliseState(){
+  if(flameDown){
+    busy = GoHome();
+  }
+  else{
+    if((countSteps==0)||(countSteps==12)|(countSteps==18)){
       busy = TURN_LEFT;
       
     }
     
     else{
-      if((countSteps==0)||(countSteps==0)){
+      if((countSteps==2)||(countSteps==4)||(countSteps==6)||(countSteps==8)||(countSteps==10)||(countSteps==14)||(countSteps==16)|(countSteps==20)){
         busy = TURN_RIGHT;
       }
       
       else {
-        if((countSteps==0)||(countSteps==0)){
+        /*if((countSteps==-1)){
           busy = TURN_AROUND;
-        }
+        }*/
 
         else{
-          if((countSteps==0)||(countSteps==0)){
+          if((countSteps==7)||(countSteps==11)||(countSteps==17)|(countSteps==21)){
             busy = CHECK_ROOM;
           }
-
+          
           else{
-            if((countSteps==0)||(countSteps==0)){
-              busy = CHECK_ROOM;
+            /**/if((countSteps==-1)){
+              busy = WALK_DISTANCE;
             }
-
+            
             else{
-              if((countSteps==0)||(countSteps==0)){
-                busy = WALK_DISTANCE;
+              if((countSteps==1)||(countSteps==3)||(countSteps==9)||(countSteps==15)){
+                busy = WALK_TO_WALL;
               }
 
               else{
-                if((countSteps==0)||(countSteps==0)){
-                  busy = WALK_TO_WALL;
+                /**/if((countSteps==-1)){
+                  busy = WALK_LOOK_LEFT;
+                }
+
+                else{
+                  if((countSteps==5)||(countSteps==13)|(countSteps==19)){
+                    busy = WALK_LOOK_RIGHT;
+                  }
                 }
               }
             }
@@ -220,8 +247,9 @@ void AnaliseState(){
         }
       }
     }
-    countSteps++;
   }
+  countSteps++;
+}
   
 #define STATE_ANALISER 1
 
@@ -239,7 +267,8 @@ void AnaliseState(){
 #define WALK_DISTANCE 9              // macro que manda o robo andar a distancia especifica (somente sera chamada em um momento do codigo, antes de entrar no ultimo quarto, portanto se refere a apenas uma distancia especifica)
 
 #define WALK_TO_WALL 10              // macro que manda o robo andar ate chegar perto da parede (necessário após checar a sala, para ficar relativamente no centro do corredor)
-
+#define WALK_LOOK_LEFT 11
+#define WALK_LOOK_RIGHT 12
 
   
 }
@@ -279,7 +308,7 @@ void Heart(){
         //Função para ir para perto da vela e apagá-la
         break;
 
-      case BACK_HOME:
+      case BACK _HOME:
         //Função que calcula a rota para voltar para o inicio, e manda o robô pra lá
         break;
 

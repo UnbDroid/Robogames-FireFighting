@@ -1,3 +1,5 @@
+#include <Wire.h>
+
 #define CTRL_REG1 0x20
 #define CTRL_REG2 0x21
 #define CTRL_REG3 0x22
@@ -8,7 +10,7 @@ int L3G4200D_Address = 105;
 int x;
 int y;
 int z;
-long int yaw = 0, pitch = 0, roll = 0;
+long int yaw = 0, pitch = 0, roll = 0, dtime;
 unsigned long t_gyro = 0, t_gyro_ant;
 
 int get_gyro(){
