@@ -25,6 +25,27 @@
 int busy = WALK_STAIRS;
 /*---------------------------------------------------------------------------*/
 
+//---------------------------------------------------------
+//Inicializacao dos ultrassons
+                                                  
+#include <NewPing.h>                           
+
+#define MAX_DIST 200   //distancia maxima que o ultrassom "ve"
+
+#define USF_TRIG    //Ultrassom frontal
+#define USF_ECHO  
+#define USL_TRIG    //Ultrassom da esquerda (left)
+#define USL_ECHO  
+#define USR_TRIG    //Ultrassom da direita (right)
+#define USR_ECHO  
+
+NewPing usf(USF_TRIG, USF_ECHO, MAX_DIST);
+NewPing usl(USL_TRIG, USL_ECHO, MAX_DIST);
+NewPing usr(USR_TRIG, USR_ECHO, MAX_DIST);
+
+float usfDistNow, uslDistNow, usrDistNow, usfDistLast, uslDistLast, usrDistLast;
+//-----------------------------------------------------------
+
 /*---------------------------------------------------------------------------*/
 /*Defines para os motores*/
 #define MAL 8   // entrada A da ponte H da roda esquerda
@@ -119,7 +140,6 @@ void OnFwd(int motor, int power){
  |10|11|12|
  |00|01|02|
  ///////////////////// NOTE QUE AS AREAS NAO VAO SER QUADRADAS !! VOA DEPENDER DO TAMANHO DA ARENA E DOS QUARTOS
- ///////////o schaivini ficou com essa funcao !
 */
 /*_______________________________________________________________________________________________________________________*/  
 /*
@@ -210,9 +230,22 @@ void Heart(){
 /*--------------------------------------___________________________________----------------------------------------------*/
 
 /*______________________________________FUNCOES DE BAIXO NIVEL !!!!!!!!!!!!______________________________________________*/
-/*
-  leitura de US instantanea + identificacao de vao somando no contador global a quantidade de vao passados para cada (esq/ dir)
-*/
+
+void ReadUS(){
+  usfDistLast=usfDistNow;
+  usfDistNow=usf.ping_cm();
+  uslDistLast=uslDistNow;
+  uslDistNow=usl.ping_cm();
+  usrDistLast=usrDistNow;
+  usrDistNow=usr.ping_cm();
+  if(uslDistNow>(uslDistLast+20)){
+    gapCountLeft++;
+  }
+  if(usrDistNow>(usrDistLast+20)){
+    gapCountRight++;
+  }
+}
+
 /*_______________________________________________________________________________________________________________________*/
 /*
   funcao que recebe a distancia como parametro e anda essa distancia pedida. (poderia ser arrompida pela leitura do vao no US)
