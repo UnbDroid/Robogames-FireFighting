@@ -25,6 +25,11 @@
 
 int busy = STATE_ANALISER;
 /*---------------------------------------------------------------------------*/
+// Servo
+#include <Servo.h>
+
+Servo myservo;
+#define SERVO_PIN 6
 
 //---------------------------------------------------------
 //Inicializacao dos ultrassons
@@ -54,6 +59,7 @@ int lookGapLeft=0, lookGapRight=0, gapFound=0;
 // Inicialização e variáveis do sensor de chama
 #define FLAME_PIN_AN  A0
 #define FLAME_PEAK 60
+#define FLAME_DIST_MIN 400
 
 int sFlameLast=0, sFlameNow, flamePresence=0;
 
@@ -227,7 +233,7 @@ int GoHome(){
   backHomeSteps++;
 }
 
-void AnaliseState(){
+void AnaliseState(){          //Sempre antes de virar para entrar em cada sala, tem que andar uma pequena distância para ficar no centro da porta
   if(flameDown){
     busy = GoHome();
   }
@@ -323,7 +329,7 @@ void Heart(){
 
       case WALK_TO_WALL:
         FwdPID();
-        if(usfDist<15){
+        if(usfDist<10){
           busy = STATE_ANALISER;
         }
           
@@ -375,6 +381,7 @@ void setup()
   SetupGyroscope(2000);
   pinMode(FLAME_PIN_AN, INPUT);
   sFlameNow=analogRead(FLAME_PIN_AN);
+  myservo.attach(SERVO_PIN);
   /*
       setttar as parada todim
   -----------------------------------------------------------

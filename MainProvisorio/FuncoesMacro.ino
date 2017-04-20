@@ -73,7 +73,7 @@ void RevPID(){
 void Turn(int degree){
   if(turnStart){
     allowEncoder = 0;
-    
+     
     OnFwd(MOTOR_RIGHT, 0);
     OnFwd(MOTOR_LEFT, 0);
     yaw=0;
@@ -97,6 +97,68 @@ void Turn(int degree){
     turnStart=1;
   }
 }
+//__________________________________________________________________________________________________________________________________________________________________________________________
+//WALK DISTANCE
+void WalkDist(int dist){
+  int distLast=coord[dir];
+  while((coord[dir]-distLast)<dist){
+    FwdPID();
+  }
+  OnFwd(MOTOR_RIGHT, 0);
+  OnFwd(MOTOR_LEFT, 0);
+}
+//_________________________________________________________________________________________________________________________________________________________________________________
+//APAGA O FOGO
+void PutFireDown(){
+  int pos;
+  //     COLOQUE AQUI A FUNÇÃO PARA BALANÇAR O ESGUICHO, JOGANDO AGUA
 
+}
 //_______________________________________________________________________________________________________________________________________________________________________________________________________________-
 // CHECA SALA
+void CheckRoom(){
+  int pos, candlePos=-1;
+  allowEncoder=0;
+  if((countSteps==7)||(countSteps==17)){
+    WalkDist(20);
+  }
+  else{
+    WalkDist(40);
+  }
+  for(pos=0/*posicao minima*/; pos<180/*posicao maxima*/; pos++){
+    ISeeFire();
+    myservo.write(pos);
+    if(flamePresence){
+      candlePos = pos;
+      pos=180;
+    }
+  }
+  if(candlePos==-1){          //Nao achou vela, volta
+    Turn(180);
+    allowEncoder=0;
+    ReadUS();
+    while(usfDist<10){
+      ReadUS();
+      FwdPID();
+    }
+    OnFwd(MOTOR_LEFT, 0);
+    OnFwd(MOTOR_RIGHT, 0);
+  }
+  else{
+    Turn(candlePos/*ou algo parecido, tem que ver o angulo certo*/);
+    myservo.write(-candlePos);
+    allowEncoder = 0;
+    ISeeFire();
+    while(sFlameNow<FLAME_DIST_MIN){
+      ISeeFire();
+      FwdPID();
+    }
+    OnFwd(MOTOR_LEFT, 0);
+    OnFwd(MOTOR_RIGHT, 0);
+
+    PutFireDown();
+
+    
+  }
+}
+

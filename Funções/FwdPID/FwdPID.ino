@@ -84,7 +84,7 @@ void loop() {
   OnFwd(MOTOR_RIGHT, -100);
   OnFwd(MOTOR_LEFT, -100);
   delay(1000);
-  AttCoord();
+  /*AttCoord();
   while(coord[0]<100){
     OnFwd(MOTOR_RIGHT, 100);
     OnFwd(MOTOR_LEFT, 100);
@@ -92,5 +92,5 @@ void loop() {
   while(coord[0]>0){
     OnFwd(MOTOR_RIGHT, -100);
     OnFwd(MOTOR_LEFT, -100);
-  }
+  }*/
 }
