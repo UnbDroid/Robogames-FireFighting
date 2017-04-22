@@ -37,7 +37,14 @@ void OnFwd(int motor, int power){
 }
 //----------------------------------------------------------------------------
         // Desliga motores
-
+void OffMotors(){
+  digitalWrite(MAL, 1);
+  digitalWrite(MBL, 1);
+  analogWrite(MOTORL_VEL, 0);
+  digitalWrite(MAR, 1);
+  digitalWrite(MBR, 1);
+  analogWrite(MOTORR_VEL, 0);
+}
 
 //---------------------------------------------
 
