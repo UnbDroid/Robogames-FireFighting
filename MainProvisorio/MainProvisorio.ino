@@ -296,7 +296,6 @@ void Heart(){
         break;*/
       case STATE_ANALISER:
         AnaliseState();
-        busy = STATE_ANALISER;
         break;
         
       /*case FORWARD:
@@ -305,13 +304,11 @@ void Heart(){
         break;*/
 
       case TURN_LEFT:
-        Turn(-90);
-        busy = STATE_ANALISER;            
+        Turn(-90);        
         break;
 
       case TURN_RIGHT:
         Turn(90);
-        busy = STATE_ANALISER;
         break;
 
       /*case TURN_AROUND:
@@ -319,7 +316,7 @@ void Heart(){
         break;*/
 
       case CHECK_ROOM:
-        //Função para checar a sala
+        CheckRoom();
         busy = STATE_ANALISER;
         break;
 
