@@ -77,20 +77,24 @@ void setup() {
 void loop() {
   /**/OnFwd(MOTOR_RIGHT, 100);
   OnFwd(MOTOR_LEFT, 100);
+  //FwdPID();
   delay(1000);
   OnFwd(MOTOR_RIGHT, 0);
   OnFwd(MOTOR_LEFT, 0);
   delay(1000);
   OnFwd(MOTOR_RIGHT, -100);
   OnFwd(MOTOR_LEFT, -100);
-  delay(1000);
+  //RevPID();
+  delay(1000);,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
   /*AttCoord();
   while(coord[0]<100){
     OnFwd(MOTOR_RIGHT, 100);
     OnFwd(MOTOR_LEFT, 100);
+    //FwdPID();
   }
   while(coord[0]>0){
     OnFwd(MOTOR_RIGHT, -100);
     OnFwd(MOTOR_LEFT, -100);
+    //RevPID();
   }*/
 }
