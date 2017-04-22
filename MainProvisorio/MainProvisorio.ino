@@ -296,6 +296,7 @@ void Heart(){
         break;*/
       case STATE_ANALISER:
         AnaliseState();
+        busy = STATE_ANALISER;
         break;
         
       /*case FORWARD:
@@ -304,11 +305,13 @@ void Heart(){
         break;*/
 
       case TURN_LEFT:
-        Turn(-90);            
+        Turn(-90);
+        busy = STATE_ANALISER;            
         break;
 
       case TURN_RIGHT:
         Turn(90);
+        busy = STATE_ANALISER;
         break;
 
       /*case TURN_AROUND:
@@ -317,10 +320,12 @@ void Heart(){
 
       case CHECK_ROOM:
         //Função para checar a sala
+        busy = STATE_ANALISER;
         break;
 
       case CANDLE:
         //Função para ir para perto da vela e apagá-la
+        busy = STATE_ANALISER;
         break;
 
       /*case WALK_DISTANCE:
