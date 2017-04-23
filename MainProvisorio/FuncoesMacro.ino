@@ -91,8 +91,8 @@ void FwdPID(){
 
 void RevPID(){
   UpdatePID();
-  OnFwd(MOTOR_RIGHT, -powerRight);
-  OnFwd(MOTOR_LEFT, -powerLeft);
+  OnRev(MOTOR_RIGHT, powerRight);
+  OnRev(MOTOR_LEFT, powerLeft);
 }
 
 //________________________________________________________________________________________________________________________________________________________________________________
