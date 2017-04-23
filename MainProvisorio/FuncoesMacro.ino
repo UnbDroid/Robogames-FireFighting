@@ -14,27 +14,54 @@ void SetupWheels(){
 
 
   
-      //  OnFwd:
+      //  OnFwd e OnRev:
       
 void OnFwd(int motor, int power){
   if(motor==MOTOR_LEFT){
-    int vel;
-    digitalWrite(MAL, (1+(power/abs(power)))/2);
-    digitalWrite(MBL, (1-(power/abs(power)))/2);
-    vel=abs(power);
-    analogWrite(MOTORL_VEL, vel);
+    digitalWrite(MAL, 1);
+    digitalWrite(MBL, 0);
+    analogWrite(MOTORL_VEL, power);
   }
   else{
     if(motor==MOTOR_RIGHT){
-      digitalWrite(MAR, (1+(power/abs(power)))/2);
-      digitalWrite(MBR, (1-(power/abs(power)))/2);
-      analogWrite(MOTORR_VEL, abs(power));
+      digitalWrite(MAR, 1);
+      digitalWrite(MBR, 0);
+      analogWrite(MOTORR_VEL, power);
     }
     else{
       //manda mensagem de erro
     }
   }
 }
+
+void OnRev(int motor, int power){
+  if(motor==MOTOR_LEFT){
+    digitalWrite(MAL, 1);
+    digitalWrite(MBL, 0);
+    analogWrite(MOTORL_VEL, -power);
+  }
+  else{
+    if(motor==MOTOR_RIGHT){
+      digitalWrite(MAR, 1);
+      digitalWrite(MBR, 0);
+      analogWrite(MOTORR_VEL, -power);
+    }
+    else{
+      //manda mensagem de erro
+    }
+  }
+}
+//----------------------------------------------------------------------------
+        // Desliga motores
+void OffMotors(){
+  digitalWrite(MAL, 1);
+  digitalWrite(MBL, 1);
+  analogWrite(MOTORL_VEL, 0);
+  digitalWrite(MAR, 1);
+  digitalWrite(MBR, 1);
+  analogWrite(MOTORR_VEL, 0);
+}
+
 //---------------------------------------------
 
         //  PID

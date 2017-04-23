@@ -304,7 +304,7 @@ void Heart(){
         break;*/
 
       case TURN_LEFT:
-        Turn(-90);            
+        Turn(-90);        
         break;
 
       case TURN_RIGHT:
@@ -316,11 +316,13 @@ void Heart(){
         break;*/
 
       case CHECK_ROOM:
-        //Função para checar a sala
+        CheckRoom();
+        busy = STATE_ANALISER;
         break;
 
       case CANDLE:
         //Função para ir para perto da vela e apagá-la
+        busy = STATE_ANALISER;
         break;
 
       /*case WALK_DISTANCE:

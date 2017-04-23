@@ -197,6 +197,13 @@ void Turn(int degree){
     yaw=0;
     AttGyroFilter(1000);
     turnStart=0;
+
+    //mudança do dir
+    if(abs(dir)==1){    //se o robo estiver virado para o eixo x inicialmente
+      if(abs(degree)==90){
+        
+      }
+    }
   }
   UpdateGyro();
   UpdateGyro();
