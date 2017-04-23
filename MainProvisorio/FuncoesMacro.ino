@@ -36,15 +36,15 @@ void OnFwd(int motor, int power){
 
 void OnRev(int motor, int power){
   if(motor==MOTOR_LEFT){
-    digitalWrite(MAL, 1);
-    digitalWrite(MBL, 0);
-    analogWrite(MOTORL_VEL, -power);
+    digitalWrite(MAL, 0);
+    digitalWrite(MBL, 1);
+    analogWrite(MOTORL_VEL, power);
   }
   else{
     if(motor==MOTOR_RIGHT){
-      digitalWrite(MAR, 1);
-      digitalWrite(MBR, 0);
-      analogWrite(MOTORR_VEL, -power);
+      digitalWrite(MAR, 0);
+      digitalWrite(MBR, 1);
+      analogWrite(MOTORR_VEL, power);
     }
     else{
       //manda mensagem de erro
