@@ -1,11 +1,5 @@
 # Robogames-FireFighting
-Espaço de desenvolvimento para categoria Fire fighting da competição RoboGames 2017.
+Development repository for the category Fire fighting of RoboGames 2017.   
 
-Padronização de código:
- -programar em inglês;
- 
- -defines e constantes: tudo em maiúsculo, e usar underline caso tenha troca de palavra;
- 
- -nome de funções: começa com maiúsculo, sem underline, caso tenha mais de uma palavra, coloca maiúsculo também;
- 
- -variáveis: começa minúsculo, sem underline, caso tenha mais de uma palavra, coloca maiúsculo;
+# Photo of the robot  
+![alt text](https://github.com/UnbDroid/Robogames-FireFighting/blob/master/Robogames-156.jpg)
